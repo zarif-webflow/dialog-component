@@ -9,7 +9,7 @@ import servePlugin from 'rollup-plugin-serve';
 import css from 'rollup-plugin-import-css';
 
 const input = {
-  index: './src/features/index.ts',
+  dialog: './src/features/dialog.ts',
 };
 const outputFormat = 'module';
 

@@ -1,5 +1,5 @@
 {
-  "name": "airdxb",
+  "name": "dialog-component",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -20,6 +20,10 @@
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
+    "@zag-js/core": "^1.12.4",
+    "@zag-js/dialog": "^1.12.4",
+    "@zag-js/interact-outside": "^1.12.4",
+    "@zag-js/remove-scroll": "^1.12.4",
     "es-toolkit": "^1.16.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-livereload": "^2.0.5",
