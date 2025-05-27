@@ -25,6 +25,7 @@
     "@zag-js/interact-outside": "^1.12.4",
     "@zag-js/remove-scroll": "^1.12.4",
     "es-toolkit": "^1.16.0",
+    "gsap": "^3.13.0",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^1.1.1"

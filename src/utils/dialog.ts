@@ -81,13 +81,45 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   let focusables: HTMLElement[] = [];
   let cleanupInteractOutside: (() => void) | null = null;
 
+  const isAnimationDisabled = dialogEl.hasAttribute('data-dialog-no-animation');
+
+  function openAnimation() {
+    if (dialogEl.classList.contains('is--hidden')) {
+      dialogEl.classList.remove('is--hidden');
+    }
+    if (gsap && !isAnimationDisabled) {
+      dialogEl.style.removeProperty('display');
+      gsap.to(dialogEl, {
+        opacity: 1,
+        duration: 0.3,
+      });
+      return;
+    }
+    dialogEl.style.removeProperty('display');
+  }
+
+  function closeAnimation() {
+    if (gsap && !isAnimationDisabled) {
+      gsap.to(dialogEl, {
+        opacity: 0,
+        duration: 0.3,
+        onComplete: () => {
+          dialogEl.style.display = 'none';
+        },
+      });
+      return;
+    }
+    dialogEl.style.display = 'none'; // hide dialog
+  }
+
   // 4) Open logic
   function open() {
-    if (isOpen) return;
+    if (isOpen) return; // already open
+
     isOpen = true;
     disableScroll(); // stop page scroll
 
-    dialogEl.style.removeProperty('display'); // show dialog
+    openAnimation();
     focusables = getFocusable(dialogEl);
     // Auto‐focus logic
     if (autoFocusInputEl !== 'disable') {
@@ -111,9 +143,7 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   function close() {
     isOpen = false;
     enableScroll(); // re-enable scroll
-
-    dialogEl.style.display = 'none'; // hide dialog
-
+    closeAnimation();
     cleanupInteractOutside?.();
     triggers[0]!.focus(); // restore focus
     onDialogClose?.();
@@ -127,7 +157,6 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   if (defaultOpen) {
     open();
   } else {
-    dialogEl.classList.remove('is--hidden');
     close();
   }
 
