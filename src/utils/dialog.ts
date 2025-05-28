@@ -21,6 +21,12 @@ function getFocusable(el: HTMLElement): HTMLElement[] {
   );
 }
 
+let isGsapAvailable = false;
+
+try {
+  isGsapAvailable = !!(window as any).gsap;
+} catch (error) {}
+
 export function createDialog(opts: DialogOptions): DialogAPI {
   const {
     dialogEl,
@@ -87,7 +93,7 @@ export function createDialog(opts: DialogOptions): DialogAPI {
     if (dialogEl.classList.contains('is--hidden')) {
       dialogEl.classList.remove('is--hidden');
     }
-    if (gsap && !isAnimationDisabled) {
+    if (isGsapAvailable && !isAnimationDisabled) {
       dialogEl.style.removeProperty('display');
       gsap.to(dialogEl, {
         opacity: 1,
@@ -99,7 +105,7 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   }
 
   function closeAnimation() {
-    if (gsap && !isAnimationDisabled) {
+    if (isGsapAvailable && !isAnimationDisabled) {
       gsap.to(dialogEl, {
         opacity: 0,
         duration: 0.3,
