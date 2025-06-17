@@ -1,28 +1,29 @@
-import { createDialog } from '../utils/dialog';
-import { preventBodyScroll } from '@zag-js/remove-scroll';
+import { preventBodyScroll } from "@zag-js/remove-scroll";
+
+import { createDialog } from "../utils/dialog";
 
 const SELECTORS = {
-  dialogWrapper: '[data-dialog-id]',
-  close: '[data-dialog-close]',
-  backdrop: '[data-dialog-backdrop]',
-  title: '[data-dialog-title]',
-  desc: '[data-dialog-desc]',
+  dialogWrapper: "[data-dialog-id]",
+  close: "[data-dialog-close]",
+  backdrop: "[data-dialog-backdrop]",
+  title: "[data-dialog-title]",
+  desc: "[data-dialog-desc]",
 };
 
 const PROPERTIES = {
-  dialogId: 'data-dialog-id',
+  dialogId: "data-dialog-id",
 };
 
 const initDialogs = () => {
   const dialogWrappers = Array.from(
-    document.querySelectorAll<CustomDialogElement>('[data-dialog-id]')
+    document.querySelectorAll<CustomDialogElement>("[data-dialog-id]")
   );
 
   for (const dialogWrapper of dialogWrappers) {
     const dialogId = dialogWrapper.getAttribute(PROPERTIES.dialogId);
 
     if (!dialogId) {
-      console.warn('Dialog wrapper is missing data-dialog-id attribute', dialogWrapper);
+      console.warn("Dialog wrapper is missing data-dialog-id attribute", dialogWrapper);
       continue;
     }
 
@@ -34,7 +35,7 @@ const initDialogs = () => {
     const backdropEl = dialogWrapper.querySelector<HTMLElement>(SELECTORS.backdrop);
 
     if (!backdropEl) {
-      console.error('Dialog wrapper is missing backdrop element', dialogWrapper);
+      console.error("Dialog wrapper is missing backdrop element", dialogWrapper);
       continue;
     }
 
