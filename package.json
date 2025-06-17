@@ -43,6 +43,7 @@
   "dependencies": {
     "@finsweet/ts-utils": "^0.40.0",
     "@taj-wf/utils": "^1.1.4",
+    "@zag-js/interact-outside": "^1.15.4",
     "@zag-js/remove-scroll": "^1.15.4"
   },
   "engines": {

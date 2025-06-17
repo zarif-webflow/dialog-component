@@ -1,5 +1,3 @@
-import { DialogAPI } from './dialog';
-
 declare global {
   /**
    * Extend all HTMLElements so that any element
@@ -15,7 +13,7 @@ declare global {
     triggerEls: HTMLElement[]; // one or more elements that open the dialog
     closeEls: HTMLElement[]; // one or more elements that close the dialog
     backdropEl: HTMLElement; // backdrop overlay
-    autoFocusInputEl?: HTMLInputElement | 'disable'; // autofocus input control
+    autoFocusInputEl?: HTMLInputElement | "disable"; // autofocus input control
     titleEl?: HTMLElement; // optional: heading inside dialog for aria-labelledby
     descriptionEl?: HTMLElement; // optional: description inside dialog for aria-describedby
     disableScroll: () => void; // called when dialog opens
@@ -23,6 +21,7 @@ declare global {
     onDialogOpen?: () => void; // hook after open
     onDialogClose?: () => void; // hook after close
     isOpen?: boolean;
+    isGsapAvailable?: boolean;
   }
 
   interface DialogAPI {

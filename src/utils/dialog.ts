@@ -1,7 +1,7 @@
-import { trackInteractOutside } from '@zag-js/interact-outside';
+import { trackInteractOutside } from "@zag-js/interact-outside";
 
 /** Utility: generate a random ID */
-function randomId(prefix = 'id') {
+function randomId(prefix = "id") {
   return `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
@@ -14,18 +14,12 @@ function getFocusable(el: HTMLElement): HTMLElement[] {
     'input:not([disabled]):not([tabindex="-1"])',
     'select:not([disabled]):not([tabindex="-1"])',
     '[tabindex]:not([tabindex="-1"])',
-  ].join(',');
+  ].join(",");
 
   return Array.from(el.querySelectorAll<HTMLElement>(focusableSelectors)).filter(
     (n) => n.offsetWidth || n.offsetHeight || n === document.activeElement
   );
 }
-
-let isGsapAvailable = false;
-
-try {
-  isGsapAvailable = !!(window as any).gsap;
-} catch (error) {}
 
 export function createDialog(opts: DialogOptions): DialogAPI {
   const {
@@ -40,15 +34,16 @@ export function createDialog(opts: DialogOptions): DialogAPI {
     autoFocusInputEl,
     descriptionEl,
     titleEl,
+    isGsapAvailable,
   } = opts;
 
-  let defaultOpen = opts.isOpen ?? false;
+  const defaultOpen = opts.isOpen ?? false;
 
   const triggers = triggerEls;
   const closers = closeEls;
 
   // 1) Ensure IDs only where needed for aria and share a common prefix
-  const prefix = randomId('Dialog');
+  const prefix = randomId("Dialog");
   if (!dialogEl.id) dialogEl.id = prefix;
   // assign id to single trigger only
   if (triggers.length === 1) {
@@ -68,18 +63,18 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   // only apply aria to a single trigger
   if (triggers.length === 1) {
     const btn = triggers[0]!;
-    btn.setAttribute('aria-haspopup', 'dialog');
-    btn.setAttribute('aria-controls', dialogEl.id);
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.setAttribute("aria-controls", dialogEl.id);
   }
 
-  dialogEl.setAttribute('role', 'dialog');
-  dialogEl.setAttribute('aria-modal', 'true');
+  dialogEl.setAttribute("role", "dialog");
+  dialogEl.setAttribute("aria-modal", "true");
   dialogEl.setAttribute(
-    'aria-labelledby',
+    "aria-labelledby",
     titleEl ? titleEl.id : triggers.length === 1 ? triggers[0]!.id : dialogEl.id
   );
   if (descriptionEl) {
-    dialogEl.setAttribute('aria-describedby', descriptionEl.id);
+    dialogEl.setAttribute("aria-describedby", descriptionEl.id);
   }
 
   // 3) State
@@ -87,21 +82,21 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   let focusables: HTMLElement[] = [];
   let cleanupInteractOutside: (() => void) | null = null;
 
-  const isAnimationDisabled = dialogEl.hasAttribute('data-dialog-no-animation');
+  const isAnimationDisabled = dialogEl.hasAttribute("data-dialog-no-animation");
 
   function openAnimation() {
-    if (dialogEl.classList.contains('is--hidden')) {
-      dialogEl.classList.remove('is--hidden');
+    if (dialogEl.classList.contains("is--hidden")) {
+      dialogEl.classList.remove("is--hidden");
     }
     if (isGsapAvailable && !isAnimationDisabled) {
-      dialogEl.style.removeProperty('display');
+      dialogEl.style.removeProperty("display");
       gsap.to(dialogEl, {
         opacity: 1,
         duration: 0.3,
       });
       return;
     }
-    dialogEl.style.removeProperty('display');
+    dialogEl.style.removeProperty("display");
   }
 
   function closeAnimation() {
@@ -110,12 +105,12 @@ export function createDialog(opts: DialogOptions): DialogAPI {
         opacity: 0,
         duration: 0.3,
         onComplete: () => {
-          dialogEl.style.display = 'none';
+          dialogEl.style.display = "none";
         },
       });
       return;
     }
-    dialogEl.style.display = 'none'; // hide dialog
+    dialogEl.style.display = "none"; // hide dialog
   }
 
   // 4) Open logic
@@ -128,11 +123,11 @@ export function createDialog(opts: DialogOptions): DialogAPI {
     openAnimation();
     focusables = getFocusable(dialogEl);
     // Auto‐focus logic
-    if (autoFocusInputEl !== 'disable') {
+    if (autoFocusInputEl !== "disable") {
       const target =
         autoFocusInputEl instanceof HTMLInputElement
           ? autoFocusInputEl
-          : (dialogEl.querySelector('input') as HTMLInputElement | null);
+          : (dialogEl.querySelector("input") as HTMLInputElement | null);
       target?.focus();
     }
     // trap outside clicks to close
@@ -151,13 +146,16 @@ export function createDialog(opts: DialogOptions): DialogAPI {
     enableScroll(); // re-enable scroll
     closeAnimation();
     cleanupInteractOutside?.();
-    triggers[0]!.focus(); // restore focus
     onDialogClose?.();
   }
 
   // 6) Toggle
   function toggle() {
-    isOpen ? close() : open();
+    if (isOpen) {
+      close();
+      return;
+    }
+    open();
   }
 
   if (defaultOpen) {
@@ -167,13 +165,13 @@ export function createDialog(opts: DialogOptions): DialogAPI {
   }
 
   // 7) Keyboard & focus trap inside dialog
-  dialogEl.addEventListener('keydown', (e) => {
+  dialogEl.addEventListener("keydown", (e) => {
     if (!isOpen) return;
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       e.preventDefault();
       close();
     }
-    if (e.key === 'Tab') {
+    if (e.key === "Tab") {
       // cycle focus
       focusables = getFocusable(dialogEl);
       const idx = focusables.indexOf(document.activeElement as HTMLElement);
@@ -182,22 +180,22 @@ export function createDialog(opts: DialogOptions): DialogAPI {
           ? focusables[idx - 1]
           : focusables[focusables.length - 1]
         : idx < focusables.length - 1
-        ? focusables[idx + 1]
-        : focusables[0];
+          ? focusables[idx + 1]
+          : focusables[0];
       e.preventDefault();
       next?.focus();
     }
   });
 
   // 8) Wire trigger(s) for open
-  triggers.forEach((el) => el.addEventListener('click', open));
+  triggers.forEach((el) => el.addEventListener("click", open));
 
   // wire close(s)
-  closers.forEach((el) => el.addEventListener('click', close));
-  backdropEl.addEventListener('click', close);
+  closers.forEach((el) => el.addEventListener("click", close));
+  backdropEl.addEventListener("click", close);
 
   const api: DialogAPI = { open, close, toggle };
   dialogEl.dialogApi = api; // attach API to dialog element
-  dialogEl.setAttribute('data-dialog-initialized', 'true');
+  dialogEl.setAttribute("data-dialog-initialized", "true");
   return api;
 }

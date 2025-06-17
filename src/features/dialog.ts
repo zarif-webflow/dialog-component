@@ -1,3 +1,4 @@
+import { getGsap, getHtmlElement, getMultipleHtmlElements } from "@taj-wf/utils";
 import { preventBodyScroll } from "@zag-js/remove-scroll";
 
 import { createDialog } from "../utils/dialog";
@@ -15,32 +16,32 @@ const PROPERTIES = {
 };
 
 const initDialogs = () => {
-  const dialogWrappers = Array.from(
-    document.querySelectorAll<CustomDialogElement>("[data-dialog-id]")
-  );
+  const dialogWrappers = getMultipleHtmlElements({ selector: "[data-dialog-id]" });
+
+  if (!dialogWrappers) return;
+
+  const [gsap] = getGsap();
 
   for (const dialogWrapper of dialogWrappers) {
-    const dialogId = dialogWrapper.getAttribute(PROPERTIES.dialogId);
+    const dialogId = dialogWrapper.getAttribute(PROPERTIES.dialogId)!;
 
-    if (!dialogId) {
-      console.warn("Dialog wrapper is missing data-dialog-id attribute", dialogWrapper);
-      continue;
-    }
+    const triggerEls = getMultipleHtmlElements({ selector: `[data-dialog-trigger="${dialogId}"]` });
 
-    const triggerEls = Array.from(
-      document.querySelectorAll<HTMLElement>(`[data-dialog-trigger="${dialogId}"]`)
-    );
-    const closeEls = Array.from(dialogWrapper.querySelectorAll<HTMLElement>(SELECTORS.close));
+    const closeEls = getMultipleHtmlElements({ selector: SELECTORS.close, parent: dialogWrapper });
 
-    const backdropEl = dialogWrapper.querySelector<HTMLElement>(SELECTORS.backdrop);
+    if (!triggerEls || !closeEls) continue;
+
+    const backdropEl = getHtmlElement({ selector: SELECTORS.backdrop, parent: dialogWrapper });
 
     if (!backdropEl) {
       console.error("Dialog wrapper is missing backdrop element", dialogWrapper);
       continue;
     }
 
-    const titleEl = dialogWrapper.querySelector<HTMLElement>(SELECTORS.title) || undefined;
-    const descriptionEl = dialogWrapper.querySelector<HTMLElement>(SELECTORS.desc) || undefined;
+    const titleEl =
+      getHtmlElement({ selector: SELECTORS.title, parent: dialogWrapper }) || undefined;
+    const descriptionEl =
+      getHtmlElement({ selector: SELECTORS.desc, parent: dialogWrapper }) || undefined;
 
     const smoothScroller = (document.body as HTMLBodyElement)?.smoothScroller;
     let enableBodyScroll: (() => void) | undefined = undefined;
@@ -66,6 +67,7 @@ const initDialogs = () => {
           enableBodyScroll?.();
         }
       },
+      isGsapAvailable: !!gsap,
     });
   }
 };
