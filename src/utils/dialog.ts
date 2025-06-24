@@ -247,7 +247,7 @@ function removeAriaAttributes(opts: { dialogEl: HTMLElement; triggers: HTMLEleme
 }
 
 function getAnimations(animationType: string) {
-  let finalAnimationType: AnimationType = "slide-from-bottom";
+  let finalAnimationType: AnimationType = "scale-out";
 
   // @ts-expect-error include animation type check
   if (ANIMATION_TYPES.includes(animationType)) {
