@@ -12,7 +12,6 @@ declare global {
     dialogEl: CustomDialogElement; // the dialog container
     triggerEls: HTMLElement[]; // one or more elements that open the dialog
     closeEls: HTMLElement[]; // one or more elements that close the dialog
-    backdropEl: HTMLElement; // backdrop overlay
     autoFocusInputEl?: HTMLInputElement | "disable"; // autofocus input control
     titleEl?: HTMLElement; // optional: heading inside dialog for aria-labelledby
     descriptionEl?: HTMLElement; // optional: description inside dialog for aria-describedby
@@ -28,6 +27,7 @@ declare global {
     open(): void;
     close(): void;
     toggle(): void;
+    destroy(): void;
   }
 }
 
