@@ -125,11 +125,13 @@ function createCloseAnimation({
   backdropEl,
   childrenElements,
   animation,
+  onComplete,
 }: {
   dialogEl: HTMLElement;
   backdropEl: HTMLElement;
   childrenElements: HTMLElement[];
   animation: DialogAnimation | null;
+  onComplete?: () => void;
 }) {
   const isAnimationDisabled = dialogEl.hasAttribute("data-dialog-no-animation");
 
@@ -138,11 +140,13 @@ function createCloseAnimation({
       backdropAnimations.close(backdropEl);
       animation(childrenElements).then(() => {
         dialogEl.style.display = "none";
+        onComplete?.();
       });
       return;
     }
 
     dialogEl.style.display = "none";
+    onComplete?.();
   };
 }
 
@@ -348,6 +352,9 @@ export function createDialog(opts: DialogOptions): CreateDialogReturn {
     backdropEl,
     childrenElements: dialogChildrenElementsBesidesBackdrop,
     animation: dialogAnimations?.close || null,
+    onComplete: () => {
+      enableScroll();
+    },
   });
 
   // State management
@@ -380,7 +387,6 @@ export function createDialog(opts: DialogOptions): CreateDialogReturn {
   function close() {
     isOpen = false;
     isOpenRef.current = false;
-    enableScroll();
     closeAnimation();
     cleanupInteractOutside?.();
     cleanupInteractOutside = null;
