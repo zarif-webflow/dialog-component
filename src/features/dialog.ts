@@ -1,8 +1,23 @@
-import { afterWebflowReady, getGsap, getHtmlElement, getMultipleHtmlElements } from "@taj-wf/utils";
+import {
+  addWFCustomPageLoadFeature,
+  afterWebflowReady,
+  getGsap,
+  getHtmlElement,
+  getMultipleHtmlElements,
+} from "@taj-wf/utils";
 import { preventBodyScroll } from "@zag-js/remove-scroll";
 
 import { PROPERTIES, SELECTORS } from "@/utils/constants";
 import { createDialog } from "@/utils/dialog";
+
+let dialogDestroyers: (() => void)[] = [];
+
+const destroyDialogs = () => {
+  for (const destroy of dialogDestroyers) {
+    destroy();
+  }
+  dialogDestroyers = [];
+};
 
 const initDialogs = () => {
   const dialogWrappers = getMultipleHtmlElements({ selector: "[data-dialog-id]" });
@@ -35,7 +50,7 @@ const initDialogs = () => {
     const smoothScroller = (document.body as HTMLBodyElement)?.smoothScroller;
     let enableBodyScroll: (() => void) | undefined = undefined;
 
-    createDialog({
+    const dialog = createDialog({
       dialogEl: dialogWrapper,
       triggerEls,
       closeEls,
@@ -57,9 +72,31 @@ const initDialogs = () => {
       },
       isGsapAvailable: !!gsap,
     });
+
+    if (!dialog) {
+      console.error("Failed to create dialog for", dialogWrapper);
+      continue;
+    }
+
+    const { destroy } = dialog;
+
+    dialogDestroyers.push(() => {
+      destroy();
+    });
   }
 };
 
 afterWebflowReady(() => {
   initDialogs();
+
+  addWFCustomPageLoadFeature({
+    name: "CUSTOM_ACCESSIBLE_DIALOGS",
+    async: false,
+    init: initDialogs,
+    destroy: destroyDialogs,
+    reInit: () => {
+      destroyDialogs();
+      initDialogs();
+    },
+  });
 });
