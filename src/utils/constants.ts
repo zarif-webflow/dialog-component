@@ -17,6 +17,8 @@ export const ANIMATION_TYPES = [
   "fade-in",
   "scale-out",
   "scale-in",
+  "slide-from-right",
+  "slide-from-left",
 ] as const;
 
 export type AnimationType = (typeof ANIMATION_TYPES)[number];

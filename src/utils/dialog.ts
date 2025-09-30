@@ -274,6 +274,14 @@ function getAnimations(animationType: string) {
     return { open: openAnimations.scaleIn, close: closeAnimations.scaleOut };
   }
 
+  if (finalAnimationType === "slide-from-right") {
+    return { open: openAnimations.slideFromRight, close: closeAnimations.slideToRight };
+  }
+
+  if (finalAnimationType === "slide-from-left") {
+    return { open: openAnimations.slideFromLeft, close: closeAnimations.slideToLeft };
+  }
+
   return { open: openAnimations.slideFromBottom, close: closeAnimations.slideToBottom };
 }
 

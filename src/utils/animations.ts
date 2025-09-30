@@ -55,6 +55,26 @@ export const openAnimations = {
       { y: 0, opacity: 1, ...commonOpenAnimationProps }
     );
   },
+  slideFromRight: (dialogChildrens: HTMLElement[]) => {
+    return gsap.fromTo(
+      dialogChildrens,
+      {
+        x: "102%",
+        opacity: 1,
+      },
+      { x: 0, opacity: 1, ...commonOpenAnimationProps, ease: "power3.out", duration: 0.3 }
+    );
+  },
+  slideFromLeft: (dialogChildrens: HTMLElement[]) => {
+    return gsap.fromTo(
+      dialogChildrens,
+      {
+        x: "-102%",
+        opacity: 1,
+      },
+      { x: 0, opacity: 1, ...commonOpenAnimationProps, ease: "power3.out", duration: 0.3 }
+    );
+  },
 } as const;
 
 export const closeAnimations = {
@@ -96,6 +116,24 @@ export const closeAnimations = {
       opacity: 0,
       duration: 0.4,
       ...commonCloseAnimationProps,
+    });
+  },
+  slideToRight: (dialogChildrens: HTMLElement[]) => {
+    return gsap.to(dialogChildrens, {
+      x: "102%",
+      opacity: 1,
+      duration: 0.3,
+      ...commonCloseAnimationProps,
+      ease: "power3",
+    });
+  },
+  slideToLeft: (dialogChildrens: HTMLElement[]) => {
+    return gsap.to(dialogChildrens, {
+      x: "-102%",
+      opacity: 1,
+      duration: 0.3,
+      ...commonCloseAnimationProps,
+      ease: "power3",
     });
   },
 } as const;
